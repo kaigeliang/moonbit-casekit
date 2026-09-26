@@ -57,7 +57,7 @@ pub fn Suite::observe(
   }
   let json = value
   validate_value(json, 0)
-  self.values[id] = json
+  self.values[id] = copy_value(json)
 }
 
 ///|
@@ -72,12 +72,18 @@ pub fn Suite::encode(self : Suite) -> String raise CaseError {
   if self.values.is_empty() {
     raise Invalid("cannot encode an empty suite")
   }
+  let ids = self.values.keys().to_array()
+  ids.sort()
+  let cases : Array[Json] = ids.map(id => {
+    "id": id.to_json(),
+    "value": self.values[id],
+  })
   let doc : Json = {
     "casekit": 1,
     "suite": self.name.to_json(),
-    "cases": self.values.to_json(),
+    "cases": cases.to_json(),
   }
-  doc.stringify()
+  canonical(doc)
 }
 
 ///|

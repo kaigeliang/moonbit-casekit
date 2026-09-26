@@ -2,6 +2,7 @@
 package "kaigeliang/casekit"
 
 // Values
+pub fn canonical(Json) -> String raise CaseError
 
 // Errors
 pub(all) suberror CaseError {
