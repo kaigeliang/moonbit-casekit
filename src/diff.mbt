@@ -22,16 +22,21 @@ fn diff_values(
   a : Json,
   b : Json,
   output : Array[Difference],
+  abs_tol : Double,
+  rel_tol : Double,
 ) -> Unit {
   if a == b {
     return
   }
   match (a, b) {
+    (Number(x, ..), Number(y, ..)) if numbers_close(x, y, abs_tol, rel_tol) =>
+      ()
     (Object(left), Object(right)) =>
       for key in keys_union(left, right) {
         let at = path + "/" + pointer_key(key)
         match (left.get(key), right.get(key)) {
-          (Some(x), Some(y)) => diff_values(id, at, x, y, output)
+          (Some(x), Some(y)) =>
+            diff_values(id, at, x, y, output, abs_tol, rel_tol)
           (x, None) =>
             output.push({
               case_id: id,
@@ -75,7 +80,7 @@ fn diff_values(
             actual: None,
           })
         } else {
-          diff_values(id, at, left[i], right[i], output)
+          diff_values(id, at, left[i], right[i], output, abs_tol, rel_tol)
         }
       }
     }
@@ -92,4 +97,24 @@ fn diff_values(
         actual: Some(b),
       })
   }
+}
+
+///|
+fn numbers_close(
+  a : Double,
+  b : Double,
+  abs_tol : Double,
+  rel_tol : Double,
+) -> Bool {
+  if a == b {
+    return true
+  }
+  if abs_tol > 0.0 && (a - b).abs() <= abs_tol {
+    return true
+  }
+  if rel_tol == 0.0 {
+    return false
+  }
+  let scale = if a.abs() > b.abs() { a.abs() } else { b.abs() }
+  scale > 0.0 && (a / scale - b / scale).abs() <= rel_tol
 }

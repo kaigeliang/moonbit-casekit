@@ -4,7 +4,7 @@ package "kaigeliang/casekit"
 // Values
 pub fn canonical(Json) -> String raise CaseError
 
-pub fn compare(Suite, Suite) -> Report raise CaseError
+pub fn compare(Suite, Suite, abs_tol? : Double, rel_tol? : Double) -> Report raise CaseError
 
 pub fn decode(String) -> Suite raise CaseError
 
@@ -39,6 +39,8 @@ pub(all) struct Report {
   suite : String
   total_cases : Int
   matched_cases : Int
+  abs_tol : Double
+  rel_tol : Double
   differences : Array[Difference]
 } derive(ToJson)
 pub fn Report::is_match(Self) -> Bool

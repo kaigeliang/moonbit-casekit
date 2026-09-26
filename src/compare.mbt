@@ -25,6 +25,8 @@ pub(all) struct Report {
   suite : String
   total_cases : Int
   matched_cases : Int
+  abs_tol : Double
+  rel_tol : Double
   differences : Array[Difference]
 } derive(ToJson)
 
@@ -47,7 +49,17 @@ fn keys_union(a : Map[String, Json], b : Map[String, Json]) -> Array[String] {
 
 ///|
 /// Compare case IDs, ignoring observation order. Missing and extra cases are differences.
-pub fn compare(expected : Suite, actual : Suite) -> Report raise CaseError {
+pub fn compare(
+  expected : Suite,
+  actual : Suite,
+  abs_tol? : Double = 0.0,
+  rel_tol? : Double = 0.0,
+) -> Report raise CaseError {
+  for tolerance in [abs_tol, rel_tol] {
+    if tolerance < 0.0 || tolerance.is_nan() || tolerance.is_inf() {
+      raise Invalid("tolerances must be finite and nonnegative")
+    }
+  }
   if expected.name != actual.name {
     raise Invalid("suite names differ")
   }
@@ -65,7 +77,7 @@ pub fn compare(expected : Suite, actual : Suite) -> Report raise CaseError {
         validate_value(a, 0)
         validate_value(b, 0)
         let before = differences.length()
-        diff_values(id, "", a, b, differences)
+        diff_values(id, "", a, b, differences, abs_tol, rel_tol)
         if differences.length() == before {
           matched += 1
         }
@@ -91,6 +103,8 @@ pub fn compare(expected : Suite, actual : Suite) -> Report raise CaseError {
   }
   {
     suite: expected.name,
+    abs_tol,
+    rel_tol,
     total_cases: ids.length(),
     matched_cases: matched,
     differences,
