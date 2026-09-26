@@ -4,6 +4,8 @@ package "kaigeliang/casekit"
 // Values
 pub fn canonical(Json) -> String raise CaseError
 
+pub fn decode(String) -> Suite raise CaseError
+
 // Errors
 pub(all) suberror CaseError {
   Invalid(String)

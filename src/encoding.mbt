@@ -25,7 +25,7 @@ fn canonical_unchecked(value : Json) -> String {
 fn copy_value(value : Json) -> Json {
   match value {
     Object(fields) => {
-      let copied : Map[String, Json] = {}
+      let copied : Map[String, Json] = Map([])
       for key, item in fields {
         copied[key] = copy_value(item)
       }
