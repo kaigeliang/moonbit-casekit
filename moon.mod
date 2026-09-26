@@ -13,3 +13,7 @@ keywords = [ "testing", "differential-testing", "cross-backend" ]
 description = "Collect and compare MoonBit behavior across compiler backends"
 
 source = "src"
+
+import {
+  "moonbitlang/async@0.19.4",
+}
