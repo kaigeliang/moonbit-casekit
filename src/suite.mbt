@@ -73,7 +73,7 @@ pub fn Suite::encode(self : Suite) -> String raise CaseError {
     raise Invalid("cannot encode an empty suite")
   }
   let ids = self.values.keys().to_array()
-  ids.sort()
+  ids.sort_by((a, b) => a.lexical_compare(b))
   let cases : Array[Json] = ids.map(id => {
     "id": id.to_json(),
     "value": self.values[id],

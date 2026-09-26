@@ -2,9 +2,9 @@
 /// Read a CaseKit v1 transcript. Empty, truncated, unknown-version and duplicate-case documents are errors.
 pub fn decode(input : String) -> Suite raise CaseError {
   if input.length() > 2097152 {
-    raise Invalid("transcript exceeds 2 MiB UTF-16 code units")
+    raise Invalid("transcript exceeds 2,097,152 UTF-16 code units")
   }
-  let doc = @json.parse(input, max_nesting_depth=70) catch {
+  let doc = @json.parse(input) catch {
     _ => raise Invalid("invalid JSON transcript")
   }
   match doc {

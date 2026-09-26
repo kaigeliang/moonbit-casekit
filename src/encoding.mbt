@@ -10,7 +10,7 @@ fn canonical_unchecked(value : Json) -> String {
   match value {
     Object(fields) => {
       let keys = fields.keys().to_array()
-      keys.sort()
+      keys.sort_by((a, b) => a.lexical_compare(b))
       let parts = keys.map(key => {
         key.to_json().stringify() + ":" + canonical_unchecked(fields[key])
       })
