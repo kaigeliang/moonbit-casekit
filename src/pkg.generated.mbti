@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "kaigeliang/casekit"
+
+// Values
+
+// Errors
+pub(all) suberror CaseError {
+  Invalid(String)
+}
+
+// Types and methods
+pub struct Suite {
+  name : String
+  values : Map[String, Json]
+}
+pub fn Suite::encode(Self) -> String raise CaseError
+pub fn Suite::new(String) -> Self raise CaseError
+pub fn Suite::observe(Self, String, Json) -> Unit raise CaseError
+pub fn Suite::observe_number(Self, String, Double) -> Unit raise CaseError
+pub fn Suite::size(Self) -> Int
+
+// Type aliases
+
+// Traits
