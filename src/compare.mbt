@@ -64,16 +64,10 @@ pub fn compare(expected : Suite, actual : Suite) -> Report raise CaseError {
       (Some(a), Some(b)) => {
         validate_value(a, 0)
         validate_value(b, 0)
-        if a == b {
+        let before = differences.length()
+        diff_values(id, "", a, b, differences)
+        if differences.length() == before {
           matched += 1
-        } else {
-          differences.push({
-            case_id: id,
-            path: "",
-            kind: ValueMismatch,
-            expected: left,
-            actual: right,
-          })
         }
       }
       (Some(_), None) =>

@@ -23,8 +23,8 @@ test "missing extra and changed observations remain distinct" {
   assert_false(report.is_match())
   assert_eq(report.total_cases, 3)
   assert_eq(report.differences[0].case_id, "changed")
-  assert_true(report.differences[1].kind == @casekit.ExtraCase)
-  assert_true(report.differences[2].kind == @casekit.MissingCase)
+  assert_true(report.differences[2].kind == @casekit.ExtraCase)
+  assert_true(report.differences[3].kind == @casekit.MissingCase)
 }
 
 ///|
