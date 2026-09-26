@@ -43,7 +43,9 @@ pub(all) struct Report {
   rel_tol : Double
   differences : Array[Difference]
 } derive(ToJson)
+pub fn Report::encode(Self) -> String raise CaseError
 pub fn Report::is_match(Self) -> Bool
+pub fn Report::render(Self, max_differences? : Int) -> String raise CaseError
 pub fn Report::to_json(Self) -> Json
 
 pub struct Suite {
