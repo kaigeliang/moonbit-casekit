@@ -8,7 +8,7 @@ pub(all) suberror CaseError {
 /// A named collection of observations, keyed by a stable case identifier.
 pub struct Suite {
   name : String
-  values : Map[String, Json]
+  priv values : Map[String, Json]
 }
 
 ///|

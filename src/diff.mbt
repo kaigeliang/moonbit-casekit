@@ -25,12 +25,25 @@ fn diff_values(
   abs_tol : Double,
   rel_tol : Double,
 ) -> Unit {
-  if a == b {
-    return
-  }
   match (a, b) {
-    (Number(x, ..), Number(y, ..)) if numbers_close(x, y, abs_tol, rel_tol) =>
-      ()
+    (Number(x, repr=left_repr), Number(y, repr=right_repr)) => {
+      let exact = if left_repr is Some(_) || right_repr is Some(_) {
+        a.stringify() == b.stringify()
+      } else {
+        x == y
+      }
+      let approximate = (abs_tol > 0.0 || rel_tol > 0.0) &&
+        numbers_close(x, y, abs_tol, rel_tol)
+      if !exact && !approximate {
+        output.push({
+          case_id: id,
+          path,
+          kind: ValueMismatch,
+          expected: Some(a),
+          actual: Some(b),
+        })
+      }
+    }
     (Object(left), Object(right)) =>
       for key in keys_union(left, right) {
         let at = path + "/" + pointer_key(key)
@@ -85,17 +98,19 @@ fn diff_values(
       }
     }
     _ =>
-      output.push({
-        case_id: id,
-        path,
-        kind: if value_kind(a) == value_kind(b) {
-          ValueMismatch
-        } else {
-          TypeMismatch
-        },
-        expected: Some(a),
-        actual: Some(b),
-      })
+      if a != b {
+        output.push({
+          case_id: id,
+          path,
+          kind: if value_kind(a) == value_kind(b) {
+            ValueMismatch
+          } else {
+            TypeMismatch
+          },
+          expected: Some(a),
+          actual: Some(b),
+        })
+      }
   }
 }
 

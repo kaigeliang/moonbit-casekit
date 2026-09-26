@@ -50,7 +50,7 @@ pub fn Report::to_json(Self) -> Json
 
 pub struct Suite {
   name : String
-  values : Map[String, Json]
+  // private fields
 }
 pub fn Suite::encode(Self) -> String raise CaseError
 pub fn Suite::new(String) -> Self raise CaseError
