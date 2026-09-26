@@ -1,0 +1,50 @@
+name: Check
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install MoonBit stable
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: moon update
+      - name: Check formatting and API
+        run: |
+          moon fmt --check
+          moon check --target native
+          moon info
+          git diff --exit-code
+      - name: Test all backends
+        run: |
+          for target in native js wasm wasm-gc; do
+            moon test --target "$target"
+          done
+      - name: Test CLI and runner failure paths
+        run: |
+          moon build --target native
+          python3 -m unittest discover -s tests -v
+      - name: Compare runnable examples
+        run: |
+          for example in text numeric collections; do
+            python3 tools/check_targets.py --package "src/examples/$example"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: casekit-transcripts
+          path: output/casekit/
+          if-no-files-found: ignore
